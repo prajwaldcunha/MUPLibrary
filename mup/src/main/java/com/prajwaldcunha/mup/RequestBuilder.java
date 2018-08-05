@@ -1,5 +1,6 @@
 package com.prajwaldcunha.mup;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
@@ -23,7 +24,7 @@ import okhttp3.RequestBody;
 public class RequestBuilder {
 
 
-    public static MultipartBody uploadRequestBody(HashMap<String,String> maps,ArrayList<Bitmap> bitmaps, Context ctx) {
+    public static MultipartBody uploadRequestBody(ArrayList<Bitmap> bitmaps, HashMap<String, String> map) {
 
 
         File file;
@@ -32,30 +33,22 @@ public class RequestBuilder {
         MultipartBody.Builder mBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
 
-                for(String key:maps.keySet()){
-                    mBody.addFormDataPart(key,maps.get(key).toString());
-                }
+        for (String key : map.keySet()) {
+            mBody.addFormDataPart(key, map.get(key));
+        }
+
         mBody.addFormDataPart("no_of_images", String.valueOf(bitmaps.size()));
-
-
-        Log.i("TAG", "uri b4   ");
 
         for (int i = 0; i < bitmaps.size(); i++) {
 
-            file = new File(String.valueOf(getImageUri(ctx, bitmaps.get(i))));
+            file = new File(String.valueOf(getImageUri(bitmaps.get(i))));
             String content_type = "jpeg";
             String file_path = file.getAbsolutePath();
 
             RequestBody file_body = RequestBody.create(MediaType.parse(content_type), file);
 
 
-            Log.i("TAG", "typee   : " + getMimeType(file_path));
-            Log.i("TAG", "file_body: " + file_body.toString());
-
-            Log.i("TAG", "file_path: " + file_path);
-            Log.i("TAG", "file_pathsssf: " + file_path.substring(file_path.lastIndexOf("/") + 1));
-
-            mBody.addFormDataPart("file" + i, file_path.substring(file_path.lastIndexOf("/") + 1) + "." + content_type, file_body);
+            mBody.addFormDataPart("file" + i, file_path.substring(file_path.lastIndexOf("/") + 1) + ".jpg", file_body);
 
         }
 
@@ -63,28 +56,23 @@ public class RequestBuilder {
         return mBody.build();
     }
 
-    private static String getMimeType(String path) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(path);
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
 
-    }
 
-    public static File getImageUri(Context inContext, Bitmap inImage) {
+    private static File getImageUri(Bitmap inImage) {
 
-        File pictureFile = getOutputMediaFile(inContext);
+        File pictureFile = getOutputMediaFile();
         if (pictureFile == null) {
-            Log.i("TAG",
-                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            //Log.i("MUP","Error creating media file, check storage permissions: ");// e.getMessage());
             return null;
         }
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
-            inImage.compress(Bitmap.CompressFormat.JPEG, 70, fos);
+            inImage.compress(Bitmap.CompressFormat.JPEG, 75, fos);
             fos.close();
         } catch (FileNotFoundException e) {
-            Log.i("TAG", "File not found: " + e.getMessage());
+            Log.i("MUP", "File not found: " + e.getMessage());
         } catch (IOException e) {
-            Log.i("TAG", "Error accessing file: " + e.getMessage());
+            Log.i("MUP", "Error accessing file: " + e.getMessage());
         }
 
         return pictureFile;
@@ -95,13 +83,14 @@ public class RequestBuilder {
     /**
      * Create a File for saving an image or video
      */
-    private static File getOutputMediaFile(Context ctx) {
+    private static File getOutputMediaFile() {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                + MUPPick.folderName
+                + MUP.folderName
                 + "/Uploads");
 
+        Log.i("MUP", "msd " + mediaStorageDir.toString());
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
@@ -112,9 +101,9 @@ public class RequestBuilder {
             }
         }
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmssSSS").format(new Date());
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("ddMMyyyy_HHmmssSSS").format(new Date());
         File mediaFile;
-        String mImageName = "IMAGES_" + timeStamp + ".jpeg";
+        String mImageName = "IMAGES_" + timeStamp + ".jpg";
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
         return mediaFile;
     }
