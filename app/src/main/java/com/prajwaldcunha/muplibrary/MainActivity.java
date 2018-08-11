@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.prajwaldcunha.mup.MUP;
 import com.prajwaldcunha.mup.MUPPick;
+import com.prajwaldcunha.mup.Options;
 import com.prajwaldcunha.mup.ResponseListener;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private final int PERMISSION_ALL = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
+
         Intent data = getIntent(); //get the intent that starts this activity, in this case: gallery intent
 
 
@@ -42,9 +46,13 @@ public class MainActivity extends AppCompatActivity {
                 Uri i = (Uri) something;
                 images.add(i);
 
-                MUPPick.init()
+                Options.init().enableNotification(true);
+
+
+
+
+                 MUPPick.init()
                         .setProgressTitle(this, "Uploading Test")
-                        .setNotificationEnabled(true)
                         .upload(this, "http://example.com/", images, new ResponseListener() {
                             @Override
                             public void onResponse(String response) {
@@ -55,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onError(String error) {
 
                             }
-                        });
+                        },Options.getInstance());
 
             } else {
                 @SuppressWarnings("unchecked")
@@ -63,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MUPPick.init()
                         .setProgressTitle(this, "Uploading")
-                        .setNotificationEnabled(true)
-                        .upload(this, "http://example.com/", images,  new ResponseListener() {
+                       .upload(this, "http://example.com/", images,  new ResponseListener() {
                             @Override
                             public void onResponse(String response) {
                                 Log.i("MUP", "Response: " + response);
@@ -74,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onError(String error) {
 
                             }
-                        });
+                        },Options.getInstance());
             }
 
         }

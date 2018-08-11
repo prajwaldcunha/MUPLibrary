@@ -28,30 +28,26 @@ import okhttp3.MultipartBody;
 
 public abstract class MUP {
 
+    public static String folderName = "/folder";
+    private final String TAG = "MUP";
     private ProgressDialog progressDialog;
 
-    private boolean isNotificationEnabled = false;
-    private int notificationIcon;
-    private int notificationColor;
-
-    public static String folderName = "/folder";
-
-    private final String TAG = "MUP";
+    public static boolean doesNotHavePermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     protected void setProgress(Context ctx, String title) {
         progressDialog = new ProgressDialog(ctx);
         progressDialog.setMax(100);
         progressDialog.setTitle(title);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-    }
-
-    protected void setNotification(boolean enabled) {
-        isNotificationEnabled = enabled;
-    }
-
-    protected void setNotificationOptions(int icon, int color) {
-        this.notificationIcon = icon;
-        this.notificationColor = color;
     }
 
     protected static class UploadTask extends AsyncTask<Integer, Integer, String> {
@@ -63,13 +59,15 @@ public abstract class MUP {
         private WeakReference<Activity> activityWeakReference;
         private HashMap<String, String> postMap;
         private ResponseListener listener;
+        private Options options;
 
-        UploadTask(Activity context, ArrayList<Uri> images, boolean isNormal, HashMap<String, String> map, ResponseListener listener) {
+        UploadTask(Activity context, ArrayList<Uri> images, boolean isNormal, HashMap<String, String> map, ResponseListener listener,Options options) {
             activityWeakReference = new WeakReference<>(context);
             bitmaps = new ArrayList<>();
             this.images = images;
             this.postMap = map;
             this.listener = listener;
+            this.options=options;
         }
 
         @Override
@@ -109,8 +107,7 @@ public abstract class MUP {
                 response = ApiCall.doOkHttpPost(url, monitoredRequest);
 
                 listener.onResponse(response);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
 
                 Log.i("MUP", "error....");
                 Log.i("MUP", e.toString());
@@ -122,11 +119,14 @@ public abstract class MUP {
 
         @Override
         protected void onPostExecute(String result) {
-            mBuilder.setContentText("Upload complete");
-            mBuilder.setContentTitle("Uploaded");
-            // Removes the progress bar
-            mBuilder.setProgress(0, 0, false);
-            mNotifyManager.notify(0, mBuilder.build());
+
+            if(options.isNotifyEnabled()) {
+                mBuilder.setContentText("Upload complete");
+                mBuilder.setContentTitle("Uploaded");
+                // Removes the progress bar
+                mBuilder.setProgress(0, 0, false);
+                mNotifyManager.notify(0, mBuilder.build());
+            }
 
         }
 
@@ -138,23 +138,28 @@ public abstract class MUP {
                 return;
             }
 
-            String channelId = "progress_channel";
-            mNotifyManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-            mBuilder = new NotificationCompat.Builder(activity, channelId);
-            mBuilder.setContentTitle("Uploading")
-                    .setContentText("Upload in progress")
-                    .setSmallIcon(R.drawable.ic_notification_icon)
-                    .setColor(ContextCompat.getColor(activity, R.color.colorPrimary))
-                    .setProgress(100, 0, false);
+            if(options.isNotifyEnabled()) {
+                String channelId = "progress_channel";
+                mNotifyManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+                mBuilder = new NotificationCompat.Builder(activity, channelId);
+                mBuilder.setContentTitle("Uploading")
+                        .setContentText("Upload in progress")
+                        .setSmallIcon(options.getNotificationIcon())
+                        .setColor(ContextCompat.getColor(activity, options.getNotificationColor()))
+                        .setProgress(100, 0, false);
+            }
 
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            if ((values[0]) % 25 == 0) {
-                mBuilder.setProgress(100, values[0], false);
-                // Displays the progress bar on notification
-                mNotifyManager.notify(0, mBuilder.build());
+
+            if(options.isNotifyEnabled()) {
+                if ((values[0]) % 25 == 0) {
+                    mBuilder.setProgress(100, values[0], false);
+                    // Displays the progress bar on notification
+                    mNotifyManager.notify(0, mBuilder.build());
+                }
             }
 
         }
@@ -204,16 +209,5 @@ public abstract class MUP {
             return result;
         }
 
-    }
-
-    public static boolean doesNotHavePermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

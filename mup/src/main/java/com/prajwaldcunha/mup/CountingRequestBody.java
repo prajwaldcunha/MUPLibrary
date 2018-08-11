@@ -1,7 +1,6 @@
 package com.prajwaldcunha.mup;
 
 import java.io.IOException;
-
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.Buffer;
@@ -14,8 +13,6 @@ import okio.Sink;
  * Decorates an OkHttp request body to count the number of bytes written when writing it. Can
  * decorate any request body, but is most useful for tracking the upload progress of large
  * multipart requests.
- *
- *
  */
 public class CountingRequestBody extends RequestBody {
 
@@ -53,6 +50,10 @@ public class CountingRequestBody extends RequestBody {
         bufferedSink.flush();
     }
 
+    public static interface Listener {
+        public void onRequestProgress(long bytesWritten, long contentLength);
+    }
+
     protected final class CountingSink extends ForwardingSink {
         private long bytesWritten = 0;
 
@@ -68,10 +69,6 @@ public class CountingRequestBody extends RequestBody {
             listener.onRequestProgress(bytesWritten, contentLength());
         }
 
-    }
-
-    public static interface Listener {
-        public void onRequestProgress(long bytesWritten, long contentLength);
     }
 
 }

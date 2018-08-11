@@ -19,24 +19,18 @@ public class MUPPick extends MUP {
         return instance;
     }
 
+
+
     public MUPPick setProgressTitle(Context ctx, String title) {
         super.setProgress(ctx, title);
         return instance;
     }
 
-    public MUPPick setNotificationEnabled(boolean isEnabled) {
-        super.setNotification(isEnabled);
-        return instance;
-    }
-
-    public MUPPick setNotification(int notificationIcon, int color) {
-        super.setNotificationOptions(notificationIcon, color);
-        return instance;
-    }
 
 
-    public void upload(Activity ctx, String url, ArrayList<Uri> images, ResponseListener listener) {
-        new UploadTask(ctx, images, true, new HashMap<String, String>(), listener).execute();
+
+    public void upload(Activity ctx, String url, ArrayList<Uri> images, ResponseListener listener,Options options) {
+        new UploadTask(ctx, images, true, new HashMap<String, String>(), listener,options).execute();
     }
 
 
