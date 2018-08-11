@@ -90,7 +90,7 @@ public abstract class MUP {
                 }
 
 
-                MultipartBody body = RequestBuilder.uploadRequestBody(bitmaps, postMap);
+                MultipartBody body = RequestBuilder.uploadRequestBody(bitmaps, postMap,options.getCompressionRate(),options.getFolderName());
 
                 CountingRequestBody monitoredRequest = new CountingRequestBody(body, new CountingRequestBody.Listener() {
                     @Override

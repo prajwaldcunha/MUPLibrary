@@ -46,8 +46,11 @@ public class MainActivity extends AppCompatActivity {
                 Uri i = (Uri) something;
                 images.add(i);
 
-                Options.init().enableNotification(true);
-
+                Options options=new Options();
+                options.enableNotification(true);
+                options.setFolderName("/folderName");
+                options.setCompressionRate(50);
+                options.setNotificationOptions(R.drawable.baseline_notification_important_black_18,R.color.colorPrimary);
 
 
 
@@ -63,11 +66,19 @@ public class MainActivity extends AppCompatActivity {
                             public void onError(String error) {
 
                             }
-                        },Options.getInstance());
+                        },options);
 
             } else {
                 @SuppressWarnings("unchecked")
                 ArrayList<Uri> images = (ArrayList<Uri>) something;
+
+                Options options=new Options();
+                options.enableNotification(true);
+                options.setFolderName("/folder");
+                options.setCompressionRate(50);
+                options.setNotificationOptions(R.drawable.baseline_notification_important_black_18,R.color.colorPrimary);
+
+
 
                 MUPPick.init()
                         .setProgressTitle(this, "Uploading")
@@ -81,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onError(String error) {
 
                             }
-                        },Options.getInstance());
+                        },options);
             }
 
         }

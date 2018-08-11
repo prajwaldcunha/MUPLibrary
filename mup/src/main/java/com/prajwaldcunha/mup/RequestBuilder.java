@@ -1,11 +1,9 @@
 package com.prajwaldcunha.mup;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,12 +21,17 @@ import okhttp3.RequestBody;
 
 public class RequestBuilder {
 
+    private static float compressionRate;
+    private static String folderName;
 
-    public static MultipartBody uploadRequestBody(ArrayList<Bitmap> bitmaps, HashMap<String, String> map) {
+
+    public static MultipartBody uploadRequestBody(ArrayList<Bitmap> bitmaps, HashMap<String, String> map, float compression, String foldername) {
 
 
         File file;
 
+        compressionRate = compression;
+        folderName = foldername;
 
         MultipartBody.Builder mBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
@@ -57,7 +60,6 @@ public class RequestBuilder {
     }
 
 
-
     private static File getImageUri(Bitmap inImage) {
 
         File pictureFile = getOutputMediaFile();
@@ -67,7 +69,9 @@ public class RequestBuilder {
         }
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
-            inImage.compress(Bitmap.CompressFormat.JPEG, 75, fos);
+            if (compressionRate > 100)
+                compressionRate = 95;
+            inImage.compress(Bitmap.CompressFormat.JPEG, (int) compressionRate, fos);
             fos.close();
         } catch (FileNotFoundException e) {
             Log.i("MUP", "File not found: " + e.getMessage());
@@ -86,8 +90,11 @@ public class RequestBuilder {
     private static File getOutputMediaFile() {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
+        if (!folderName.startsWith("/"))
+            folderName = "/" + folderName;
+
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                + MUP.folderName
+                + folderName
                 + "/Uploads");
 
         Log.i("MUP", "msd " + mediaStorageDir.toString());

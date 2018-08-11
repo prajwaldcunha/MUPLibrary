@@ -2,25 +2,23 @@ package com.prajwaldcunha.mup;
 
 public class Options {
 
-    private static Options instance;
-    String folderName = "/folder";
-    float compressionRate = 20;
-    private boolean isNotificationEnabled = false;
+
+    String folderName ;
+    float compressionRate;
+    private boolean isNotificationEnabled;
     private int notificationIcon;
     private int notificationColor;
 
-    public static Options init() {
-        if (instance == null) {
-            instance = new Options();
-        }
-        return instance;
+
+    public Options() {
+        folderName = "/folder";
+        compressionRate = 20;
+        isNotificationEnabled = false;
+        notificationIcon = R.drawable.baseline_notification_important_black_24;
+        notificationColor = R.color.colorPrimary;
     }
 
-    public static Options getInstance() {
-        return instance;
-    }
-
-   public void enableNotification(boolean enabled) {
+    public void enableNotification(boolean enabled) {
 
         isNotificationEnabled = enabled;
     }
@@ -30,32 +28,35 @@ public class Options {
         this.notificationColor = color;
     }
 
-    public void setFolderName(String folderName) {
-        this.folderName = folderName;
-    }
-
     public void setCompressionRate(int compressionRate) {
         this.compressionRate = compressionRate;
     }
 
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
 
-    public String getFolderName() {
+    protected String getFolderName() {
         return folderName;
     }
 
-    public float getCompressionRate() {
+
+
+    protected float getCompressionRate() {
         return compressionRate;
     }
 
-    public boolean isNotifyEnabled() {
+
+
+    protected boolean isNotifyEnabled() {
         return isNotificationEnabled;
     }
 
-    public int getNotificationIcon() {
+    protected int getNotificationIcon() {
         return notificationIcon;
     }
 
-    public int getNotificationColor() {
+    protected int getNotificationColor() {
         return notificationColor;
     }
 }
