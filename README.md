@@ -30,7 +30,7 @@ change `x.y.z` to version in the [release page](https://github.com/prajwaldcunha
 
 
 ## Usage
-### For uploading multiple images by passing an ArrayList of URI of images.
+### 1)For uploading multiple images by passing an ArrayList of URI of images.
 
 #### Request for permissions:
 ```java
@@ -57,16 +57,18 @@ if (data != null && data.getExtras() != null) {
                 Uri i = (Uri) something;
                 images.add(i);
 
-                Options options=new Options();
-                options.enableNotification(true);
-                options.setFolderName("/folderName");
-                options.setCompressionRate(50);
+                Options options=new Options();                  // To use additional features
+                options.enableNotification(true);		// To show notifications
+                options.setFolderName("/folderName");		// Set FolderName to store compressed images before uploading
+                options.setCompressionRate(50);			// Specify the compression rate for images. Eg: 50
+		
                 options.setNotificationOptions(R.drawable.baseline_notification_important_black_18,R.color.colorPrimary);
+				// Set the drawable for notification and the color for notification bar.
 
 
-
-                 MUPPick.init()
-                        .setProgressTitle(this, "Uploading Test")
+		
+                 MUPPick.init()							
+                        .setProgressTitle(this, "Uploading Test")		// Set text to show on Progress Dialog
                         .upload(this, "http://example.com/", images, new ResponseListener() {
                             @Override
                             public void onResponse(String response) {
@@ -83,17 +85,19 @@ if (data != null && data.getExtras() != null) {
                 @SuppressWarnings("unchecked")
                 ArrayList<Uri> images = (ArrayList<Uri>) something;
 
-                Options options=new Options();
-                options.enableNotification(true);
-                options.setFolderName("/folder");
-                options.setCompressionRate(50);
+                Options options=new Options();                 		// To use additional features
+                options.enableNotification(true);			// To show notifications
+                options.setFolderName("/folderName");			// Set FolderName to store compressed images before uploading
+                options.setCompressionRate(50);				// Specify the compression rate for images. Eg: 50
+		
                 options.setNotificationOptions(R.drawable.baseline_notification_important_black_18,R.color.colorPrimary);
+				// Set the drawable for notification and the color for notification bar.
 
 
 
                 MUPPick.init()
-                        .setProgressTitle(this, "Uploading")
-                       .upload(this, "http://example.com/", images,  new ResponseListener() {
+                        .setProgressTitle(this, "Uploading")		// Set text to show on Progress Dialog
+                        .upload(this, "http://example.com/", images,  new ResponseListener() {
                             @Override
                             public void onResponse(String response) {
                                 Log.i("MUP", "Response: " + response);
