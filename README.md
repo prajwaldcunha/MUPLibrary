@@ -1,6 +1,14 @@
 # MUPLibrary
 
-
+##### This library supports uploading of multiple images using OKHTTP3. 
+## Features
+* Customizable Image Picker.
+* Share images from gallery.
+* Upload status on Notification bar.
+* Progress Dialog while uploading.
+* Specify compression rate for photos before uploading and local storage of compressed photos.
+* Check for necessary permissions.
+* Set Folder name for local storage of compressed photos.
 
 ## Sample Project
 
@@ -121,5 +129,6 @@ if (data != null && data.getExtras() != null) {
             }
 ```
 
-
+## License
+MIT License(https://github.com/prajwaldcunha/MUPLibrary/blob/master/LICENSE)
 
