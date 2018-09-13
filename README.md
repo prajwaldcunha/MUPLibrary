@@ -30,7 +30,10 @@ change `x.y.z` to version in the [release page](https://github.com/prajwaldcunha
 
 
 ## Usage
-### 1)For uploading multiple images by passing an ArrayList of URI of images.
+
+
+
+### For uploading multiple images by passing an ArrayList of URI of images.
 
 #### Request for permissions:
 ```java
@@ -44,6 +47,13 @@ final String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manife
         }
 	
 ```
+
+### For using image picker 
+```java
+	MUPPick.init()
+		.pickImages(Activity ctx,String toolbarFolderTitleName,String toolbarImageTitleName,int maxNoImages,int theme)
+```
+
 
 #### Get the intent that starts this activity, in this case: gallery intent
 ```java
